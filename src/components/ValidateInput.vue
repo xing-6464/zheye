@@ -1,11 +1,12 @@
 <template>
   <div class="validate-input-container pb-3">
     <input
-      type="test" class="form-control"
+      class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
       :value="inputRef.val"
       @input="updateValue"
       @blur="validateInput"
+      v-bind="$attrs"
     >
     <span v-if="inputRef.error" class="invalid-feedback">{{ inputRef.message }}</span>
   </div>
@@ -16,12 +17,13 @@ import { defineComponent, reactive, PropType } from 'vue'
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 export interface RuleProp {
-  type: 'required' | 'email' | 'range';
+  type: 'required' | 'email' | 'password' | 'range';
   message: string;
 }
 export type RulesProp = RuleProp[]
 export default defineComponent({
   name: 'ValidateInput',
+  inheritAttrs: false, // 禁用属性继承
   props: {
     rules: Array as PropType<RulesProp>,
     modelValue: String
