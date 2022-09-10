@@ -77,7 +77,7 @@ export default defineComponent({
     const passwordVal = ref('')
     const passwordRules: RulesProp = [
       { type: 'required', message: '密码不能为空' },
-      { type: 'password', message: '请输入正确的密码' }
+      { type: 'range', message: '密码必须不少于6位，不能大于16位，不能有空格', min: 6, max: 16 }
     ]
     return {
       user: testUser,

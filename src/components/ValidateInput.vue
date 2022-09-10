@@ -8,7 +8,9 @@
       @blur="validateInput"
       v-bind="$attrs"
     >
-    <span v-if="inputRef.error" class="invalid-feedback">{{ inputRef.message }}</span>
+    <span v-if="inputRef.error" class="invalid-feedback">
+      {{ inputRef.message }}
+    </span>
   </div>
 </template>
 
@@ -16,9 +18,12 @@
 import { defineComponent, reactive, PropType } from 'vue'
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+const emptyReg = /^[^\s]*$/
 export interface RuleProp {
-  type: 'required' | 'email' | 'password' | 'range';
+  type: 'required' | 'email' | 'range';
   message: string;
+  min?: number
+  max?: number
 }
 export type RulesProp = RuleProp[]
 export default defineComponent({
@@ -50,6 +55,15 @@ export default defineComponent({
               break
             case 'email':
               passed = emailReg.test(inputRef.val)
+              break
+            case 'range':
+              if (rule.min && !rule.max) {
+                passed = rule.min <= inputRef.val.length && emptyReg.test(inputRef.val)
+              } else if (rule.max && !rule.min) {
+                passed = rule.max >= inputRef.val.length && emptyReg.test(inputRef.val)
+              } else if (rule.max && rule.min) {
+                passed = (rule.min <= inputRef.val.length) && (inputRef.val.length <= rule.max) && emptyReg.test(inputRef.val)
+              }
               break
             default:
               break
