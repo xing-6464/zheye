@@ -2,7 +2,7 @@
   <div class='container'>
     <global-header :user="user"></global-header>
     <home></home>
-    <!-- <login></login> -->
+    <global-footer></global-footer>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
+import GlobalFooter from './components/GlobalFooter.vue'
 
 const testUser: UserProps = {
   isLogin: false,
@@ -25,7 +26,8 @@ export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    Home
+    Home,
+    GlobalFooter
     // Login
   },
   setup () {
