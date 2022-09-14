@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <global-header :user="user"></global-header>
-    <form action="">
+    <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">邮箱地址</label>
         <validate-Input
@@ -12,7 +12,7 @@
         />
       </div>
       <div class="mb-3">
-        <label class="form-label">邮箱地址</label>
+        <label class="form-label">密码</label>
         <validate-Input
          :rules="passwordRules"
          v-model="passwordVal"
@@ -20,7 +20,10 @@
          type="password"
         />
       </div>
-    </form>
+      <template #submit>
+        <span class="btn btn-danger">Submit</span>
+      </template>
+    </validate-form>
   </div>
 </template>
 
@@ -29,6 +32,7 @@ import { defineComponent, ref } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader, { UserProps } from './components/GlobalHeader.vue'
 import ValidateInput, { RulesProp } from './components/ValidateInput.vue'
+import ValidateForm from './components/ValidateForm.vue'
 
 const testUser: UserProps = {
   isLogin: false,
@@ -66,7 +70,8 @@ export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    ValidateInput
+    ValidateInput,
+    ValidateForm
   },
   setup () {
     const emailVal = ref('')
@@ -79,12 +84,16 @@ export default defineComponent({
       { type: 'required', message: '密码不能为空' },
       { type: 'range', message: '密码必须不少于6位，不能大于16位，不能有空格', min: 6, max: 16 }
     ]
+    const onFormSubmit = (result: boolean) => {
+      console.log('1234', result)
+    }
     return {
       user: testUser,
       emailRules,
       emailVal,
       passwordVal,
-      passwordRules
+      passwordRules,
+      onFormSubmit
     }
   }
 })
