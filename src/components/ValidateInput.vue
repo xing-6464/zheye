@@ -45,6 +45,9 @@ export default defineComponent({
       inputRef.val = targetValue
       context.emit('update:modelValue', targetValue)
     }
+    const clearInput = () => {
+      inputRef.val = ''
+    }
     const validateInput = () => {
       if (props.rules) {
         const allPassed = props.rules.every(rule => {
@@ -77,7 +80,8 @@ export default defineComponent({
       return true
     }
     onMounted(() => {
-      emitter.emit('form-item-created', inputRef.val)
+      emitter.emit('form-item-created', validateInput)
+      emitter.emit('form-input-clear', clearInput)
     })
     return {
       inputRef,
