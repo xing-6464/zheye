@@ -30,9 +30,10 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const list = computed(() => store.state.columns)
-
+    const biggerColumnLen = computed(() => store.getters.biggerColumnsLen)
     return {
-      list
+      list,
+      biggerColumnLen
     }
   }
 })
