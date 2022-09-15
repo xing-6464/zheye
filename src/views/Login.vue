@@ -26,9 +26,11 @@
 <script lang='ts'>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import { GlobalDataProps } from '@/store'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 
@@ -40,6 +42,7 @@ export default defineComponent({
   },
   setup () {
     const router = useRouter()
+    const store = useStore<GlobalDataProps>()
     const emailVal = ref('')
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱地址不能为空' },
@@ -51,9 +54,9 @@ export default defineComponent({
       { type: 'range', message: '密码必须不少于6位，不能大于16位，不能有空格', min: 6, max: 16 }
     ]
     const onFormSubmit = (result: boolean) => {
-      console.log('result: ', result)
       if (result) {
-        router.push({ name: 'column', params: { id: 1 } })
+        router.push('/')
+        store.commit('login')
       }
     }
     return {
