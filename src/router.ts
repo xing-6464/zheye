@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ColumnDetail from './views/ColumnDetail.vue'
 import CreatPost from './views/CreatePost.vue'
+import store from './store'
 
 const routerHistory = createWebHistory()
 const router = createRouter({
@@ -30,6 +31,13 @@ const router = createRouter({
       component: CreatPost
     }
   ]
+})
+router.beforeEach((to, from, next) => {
+  if (to.name !== 'login' && !store.state.user.isLogin) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router
