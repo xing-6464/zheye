@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <global-header :user="user"></global-header>
-    <h1 v-if="isLoading">正在加载</h1>
+    <loader text="拼命加载中" background="rgba(0,0,0, 0.8)"></loader>
     <router-view></router-view>
     <global-footer></global-footer>
   </div>
@@ -16,12 +16,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { GlobalDataProps } from './store'
 import GlobalHeader from './components/GlobalHeader.vue'
 import GlobalFooter from './components/GlobalFooter.vue'
+import Loader from './components/Loader.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
-    GlobalFooter
+    GlobalFooter,
+    Loader
   },
   setup () {
     const store = useStore<GlobalDataProps>()
