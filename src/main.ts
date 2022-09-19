@@ -8,6 +8,7 @@ import App from './App.vue'
 
 axios.defaults.baseURL = 'http://apis.imooc.com/api/'
 axios.interceptors.request.use(config => {
+  store.commit('setLoading', true)
   // get 请求，添加到 url 中
   config.params = { ...config.params, icode: 'A2D7D59EB2DF04B2' }
   // 其他请求，添加到 body 中
@@ -20,6 +21,11 @@ axios.interceptors.request.use(config => {
   }
   return config
 })
+axios.interceptors.response.use(config => {
+  store.commit('setLoading', false)
+  return config
+})
+
 const app = createApp(App)
 app.use(router)
 app.use(store)

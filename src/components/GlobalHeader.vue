@@ -25,7 +25,7 @@ import DropdownItem from './DropdownItem.vue'
 export interface UserProps {
   isLogin: boolean;
   name?: string;
-  id?: number;
+  id?: string;
 }
 
 export default defineComponent({
