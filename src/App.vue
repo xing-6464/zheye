@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <global-header :user="user"></global-header>
-    <loader text="拼命加载中" background="rgba(0,0,0, 0.8)"></loader>
+    <loader v-if="isLoading"></loader>
     <router-view></router-view>
     <global-footer></global-footer>
   </div>
@@ -29,7 +29,6 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const currentUser = computed(() => store.state.user)
     const isLoading = computed(() => store.state.loading)
-    console.log(isLoading)
 
     return {
       user: currentUser,
