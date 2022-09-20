@@ -51,10 +51,18 @@ export default defineComponent({
     const passwordVal = ref('')
     const passwordRules: RulesProp = [
       { type: 'required', message: '密码不能为空' },
-      { type: 'range', message: '密码必须不少于6位，不能大于16位，不能有空格', min: 6, max: 16 }
+      { type: 'range', message: '密码必须不少于6位，不能大于16位，不能有空格', min: 5, max: 16 }
     ]
     const onFormSubmit = (result: boolean) => {
       if (result) {
+        const payload = {
+          email: emailVal.value,
+          password: passwordVal.value
+        }
+        store.dispatch('loginAndFetch', payload).then(data => {
+          console.log(data)
+          router.push('/')
+        })
         router.push('/')
         store.commit('login')
       }

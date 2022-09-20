@@ -32,6 +32,7 @@ export interface PostProps {
 }
 
 export interface GlobalDataProps {
+  token: string;
   loading: boolean;
   columns: ColumnProps[];
   posts: PostProps[];
@@ -42,17 +43,23 @@ const getAndCommit = async (url: string, mutationName: string, commit: Commit) =
   const { data } = await axios.get(url)
   commit(mutationName, data)
 }
+const postAndCommit = async (url: string, mutationName: string, commit: Commit, payload: any) => {
+  const { data } = await axios.post(url, payload)
+  commit(mutationName, data)
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
+    token: '',
     loading: false,
     columns: [],
     posts: [],
-    user: { isLogin: true, name: 'xing', column: '1' }
+    user: { isLogin: false, name: 'xing', column: '1' }
   },
   mutations: {
-    login (state) {
-      state.user = { ...state.user, isLogin: true, name: 'xing' }
-    },
+    // login (state) {
+    //   state.user = { ...state.user, isLogin: true, name: 'xing' }
+    // },
     createPost (state, newPost) {
       state.posts.push(newPost)
     },
@@ -67,6 +74,13 @@ const store = createStore<GlobalDataProps>({
     },
     setLoading (state, status) {
       state.loading = status
+    },
+    fetchCurrentUser (state, rawData) {
+      state.user = { isLogin: true, ...rawData.data }
+    },
+    login (state, rawData) {
+      state.token = rawData.data.token
+      axios.defaults.headers.common.Authorization = `Bearer ${rawData.data.token}`
     }
   },
   actions: {
@@ -78,6 +92,17 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts ({ commit }, cid) {
       getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    },
+    fetchCurrentUser ({ commit }) {
+      getAndCommit('/user/current', 'fetchCurrentUser', commit)
+    },
+    login ({ commit }, payload) {
+      postAndCommit('/user/login', 'login', commit, payload)
+    },
+    loginAndFetch ({ dispatch }, loginData) {
+      return dispatch('login', loginData).then(() => {
+        return dispatch('fetchCurrentUser')
+      })
     }
   },
   getters: {
