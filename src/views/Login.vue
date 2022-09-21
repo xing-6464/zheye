@@ -63,8 +63,6 @@ export default defineComponent({
           console.log(data)
           router.push('/')
         })
-        router.push('/')
-        store.commit('login')
       }
     }
     return {
