@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <global-header :user="user"></global-header>
-    <h1>{{ error.message }}</h1>
+    <message-vue type="error" :message="error.message" v-if="error.status"></message-vue>
     <loader v-if="isLoading"></loader>
     <router-view></router-view>
     <global-footer></global-footer>
@@ -19,13 +19,15 @@ import { GlobalDataProps } from './store'
 import GlobalHeader from './components/GlobalHeader.vue'
 import GlobalFooter from './components/GlobalFooter.vue'
 import Loader from './components/Loader.vue'
+import MessageVue from './components/Message.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
     GlobalFooter,
-    Loader
+    Loader,
+    MessageVue
   },
   setup () {
     const store = useStore<GlobalDataProps>()
