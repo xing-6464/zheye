@@ -2,6 +2,7 @@
   <div class='container'>
     <global-header :user="user"></global-header>
     <loader v-if="isLoading"></loader>
+    <vnode msg="xing"></vnode>
     <router-view></router-view>
     <global-footer></global-footer>
   </div>
@@ -19,13 +20,15 @@ import GlobalHeader from './components/GlobalHeader.vue'
 import GlobalFooter from './components/GlobalFooter.vue'
 import Loader from './components/Loader.vue'
 import createMessage from './components/createMessage'
+import Vnode from './components/Vnode'
 
 export default defineComponent({
   name: 'App',
   components: {
     GlobalHeader,
     GlobalFooter,
-    Loader
+    Loader,
+    Vnode
   },
   setup () {
     const store = useStore<GlobalDataProps>()
