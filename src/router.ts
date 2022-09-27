@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ColumnDetail from './views/ColumnDetail.vue'
 import CreatPost from './views/CreatePost.vue'
+import Signup from './views/Signup.vue'
 import store from './store'
 
 const routerHistory = createWebHistory()
@@ -31,6 +32,11 @@ const router = createRouter({
       name: 'create',
       component: CreatPost,
       meta: { requiredLogin: true }
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: Signup
     }
   ]
 })
