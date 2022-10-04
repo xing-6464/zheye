@@ -41,7 +41,6 @@ export default defineComponent({
       store.dispatch('fetchColumns')
     })
     const list = computed(() => store.state.columns)
-    const biggerColumnLen = computed(() => store.getters.biggerColumnsLen)
     const beforeUpload = (file: File) => {
       const isJPG = file.type === 'image/jpeg'
       if (!isJPG) {
@@ -56,7 +55,6 @@ export default defineComponent({
 
     return {
       list,
-      biggerColumnLen,
       beforeUpload,
       onFileUploaded
     }
