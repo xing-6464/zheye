@@ -6,6 +6,12 @@ export interface ResponseType<P = { [key: string]: any }> {
   meg: string;
   data: P;
 }
+export interface ImageProps {
+  _id?: string;
+  url?: string;
+  fitUrl?: string;
+  createdAt?: string;
+}
 
 export interface UserProps {
   isLogin: boolean;
@@ -13,13 +19,8 @@ export interface UserProps {
   _id?: string;
   column?: string;
   email?: string;
-}
-
-export interface ImageProps {
-  _id?: string;
-  url?: string;
-  fitUrl?: string;
-  createdAt?: string;
+  avatar?: ImageProps;
+  description?: string;
 }
 
 export interface ColumnProps {
@@ -110,6 +111,9 @@ const store = createStore<GlobalDataProps>({
       state.token = ''
       localStorage.removeItem('token')
       delete axios.defaults.headers.common.Authorization
+    },
+    fetchPost (state, rawData) {
+      state.posts = [rawData.data]
     }
   },
   actions: {
@@ -135,6 +139,9 @@ const store = createStore<GlobalDataProps>({
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
       })
+    },
+    fetchPost ({ commit }, id) {
+      return getAndCommit(`/posts/${id}`, 'fetchPost', commit)
     }
   },
   getters: {
@@ -143,6 +150,9 @@ const store = createStore<GlobalDataProps>({
     },
     getPostsByCid: (state) => (cid: string) => {
       return state.posts.filter(post => post.column === cid)
+    },
+    getCurrentPost: (state) => (id: string) => {
+      return state.posts.find(post => post._id === id)
     }
   }
 })
