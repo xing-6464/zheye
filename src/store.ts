@@ -18,6 +18,7 @@ export interface UserProps {
 export interface ImageProps {
   _id?: string;
   url?: string;
+  fitUrl?: string;
   createdAt?: string;
 }
 
@@ -33,9 +34,10 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: ImageProps;
+  image?: ImageProps | string;
   createdAt?: string;
   column: string;
+  author?: string;
 }
 
 export interface GlobalErrorProps {
@@ -105,8 +107,9 @@ const store = createStore<GlobalDataProps>({
     },
     outLogin (state) {
       state.user = { isLogin: false }
-      localStorage.setItem('token', '')
-      axios.defaults.headers.common.Authorization = ''
+      state.token = ''
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common.Authorization
     }
   },
   actions: {
@@ -124,6 +127,9 @@ const store = createStore<GlobalDataProps>({
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/posts', 'createPost', commit, payload)
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
