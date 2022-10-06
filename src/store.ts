@@ -1,5 +1,5 @@
 import { createStore, Commit } from 'vuex'
-import axios from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export interface ResponseType<P = { [key: string]: any }> {
   code: number;
@@ -65,6 +65,11 @@ const postAndCommit = async (url: string, mutationName: string, commit: Commit, 
   commit(mutationName, data)
   return data
 }
+const asyncCommit = async (url: string, mutationName: string, commit: Commit, config: AxiosRequestConfig = { method: 'get' }) => {
+  const { data } = await axios(url, config)
+  commit(mutationName, data)
+  return data
+}
 
 const store = createStore<GlobalDataProps>({
   state: {
@@ -114,6 +119,15 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPost (state, rawData) {
       state.posts = [rawData.data]
+    },
+    updatePost (state, { data }) {
+      state.posts = state.posts.map(post => {
+        if (post._id === data._id) {
+          return data
+        } else {
+          return post
+        }
+      })
     }
   },
   actions: {
@@ -142,6 +156,12 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPost ({ commit }, id) {
       return getAndCommit(`/posts/${id}`, 'fetchPost', commit)
+    },
+    updatePost ({ commit }, { id, payload }) {
+      return asyncCommit(`/posts/${id}`, 'fetchPost', commit, {
+        method: 'patch',
+        data: payload
+      })
     }
   },
   getters: {
