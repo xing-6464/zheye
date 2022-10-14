@@ -1,8 +1,8 @@
 <template>
   <div class="post-detail-page">
     <modal
-     title="删除文章"
-     :visible="modalIsVisible"
+      title="删除文章"
+      :visible="modalIsVisible"
       @modal-on-close="modalIsVisible = false"
       @modal-on-confirm="hideAndDelete"
     >

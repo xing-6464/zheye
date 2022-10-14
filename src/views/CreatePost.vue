@@ -25,13 +25,15 @@
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
         <validate-input
-          :rules="titleRules" v-model="titleVal"
+          :rules="titleRules"
+          v-model="titleVal"
           placeholder="请输入文章标题"
           type="text"
         />
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情：</label>
+        <textarea ref="textArea"></textarea>
         <validate-input
           rows="10"
           type="password"
@@ -53,6 +55,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
+import EasyMDE from 'easymde'
 
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
@@ -75,6 +78,7 @@ export default defineComponent({
     const route = useRoute()
     const isEditMode = !!route.query.id
     const store = useStore<GlobalDataProps>()
+    const textArea = ref<null | HTMLTextAreaElement>(null)
     let imageId = ''
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
@@ -85,6 +89,9 @@ export default defineComponent({
     ]
 
     onMounted(() => {
+      if (textArea.value) {
+        const easyMDEInstance = new EasyMDE({ element: textArea.value })
+      }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
           const currentPost = rawData.data
@@ -163,7 +170,8 @@ export default defineComponent({
       uploadCheck,
       handleFileUploaded,
       uploadedData,
-      isEditMode
+      isEditMode,
+      textArea
     }
   }
 })
