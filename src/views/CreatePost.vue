@@ -33,7 +33,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情：</label>
-        <textarea ref="textArea"></textarea>
+        <edirot v-model="contentVal" :options="editorOpions"></edirot>
         <validate-input
           rows="10"
           type="password"
@@ -55,7 +55,7 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
-import EasyMDE from 'easymde'
+import { Options } from 'easymde'
 
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '@/store'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
@@ -63,13 +63,15 @@ import ValidateForm from '../components/ValidateForm.vue'
 import Uploader from '../components/Uploader.vue'
 import { beforeUploadCheck } from '@/helper'
 import createMessage from '@/components/createMessage'
+import Edirot from '@/components/Editor.vue'
 
 export default defineComponent({
   name: 'Login',
   components: {
     ValidateInput,
     ValidateForm,
-    Uploader
+    Uploader,
+    Edirot
   },
   setup () {
     const uploadedData = ref()
@@ -80,6 +82,9 @@ export default defineComponent({
     const store = useStore<GlobalDataProps>()
     const textArea = ref<null | HTMLTextAreaElement>(null)
     let imageId = ''
+    const editorOpions: Options = {
+      spellChecker: false
+    }
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
     ]
@@ -89,9 +94,6 @@ export default defineComponent({
     ]
 
     onMounted(() => {
-      if (textArea.value) {
-        const easyMDEInstance = new EasyMDE({ element: textArea.value })
-      }
       if (isEditMode) {
         store.dispatch('fetchPost', route.query.id).then((rawData: ResponseType<PostProps>) => {
           const currentPost = rawData.data
@@ -171,7 +173,8 @@ export default defineComponent({
       handleFileUploaded,
       uploadedData,
       isEditMode,
-      textArea
+      textArea,
+      editorOpions
     }
   }
 })
