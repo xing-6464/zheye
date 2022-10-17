@@ -9,17 +9,17 @@ const useLoadMore = (actionsName: string, total: ComputedRef<number>,
   params: LoadParams = { currentPage: 2, pageSize: 5 }) => {
   const store = useStore()
   const currentPage = ref(params.currentPage)
-  const requestParams = {
+  const requestParams = computed(() => ({
     currentPage: currentPage.value,
     pageSize: params.pageSize
-  }
+  }))
   const loadMorePage = () => {
-    store.dispatch(actionsName, requestParams).then(() => {
+    store.dispatch(actionsName, requestParams.value).then(() => {
       currentPage.value++
     })
   }
   const isLastPage = computed(() => {
-    return Math.ceil(total.value / params.pageSize) === currentPage.value
+    return Math.ceil(total.value / params.pageSize) < currentPage.value
   })
 
   return {

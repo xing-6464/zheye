@@ -13,6 +13,13 @@
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <column-list :list="list"></column-list>
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-outline-primary mt-2 mb-5 btn-block w-25" type="button"
+        @click="loadMorePage" v-if="!isLastPage"
+      >
+        加载更多
+      </button>
+    </div>
   </div>
 </template>
 
@@ -21,6 +28,7 @@ import { defineComponent, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store'
 import ColumnList from '../components/ColumnList.vue'
+import useLoadMore from '@/hooks/useLoadMore'
 
 export default defineComponent({
   name: 'Home',
@@ -29,13 +37,17 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
+    const total = computed(() => store.state.columns.total)
     onMounted(() => {
-      store.dispatch('fetchColumns')
+      store.dispatch('fetchColumns', { pageSize: 3 })
     })
     const list = computed(() => store.getters.getColumns)
+    const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: 2 })
 
     return {
-      list
+      list,
+      loadMorePage,
+      isLastPage
     }
   }
 })
