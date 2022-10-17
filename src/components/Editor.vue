@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, onMounted, onUnmounted } from 'vue'
+import { defineProps, defineEmits, defineExpose, ref, onMounted, onUnmounted } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 
 // 类型，属性，事件
@@ -22,6 +22,8 @@ const props = defineProps<EditorProps>()
 const emit = defineEmits<EditorEvents>()
 
 // 有了模板我们需要一些初始化的数据
+// 1 暴露对应的方法
+// 2 结合页面实现验证功能
 const textArea = ref<null | HTMLTextAreaElement>(null)
 let easyMDEInstance: EasyMDE | null = null
 const innerValue = ref(props.modelValue || '')
@@ -57,5 +59,19 @@ onUnmounted(() => {
     easyMDEInstance.cleanup()
   }
   easyMDEInstance = null
+})
+
+const clear = () => {
+  if (easyMDEInstance) {
+    easyMDEInstance.value('')
+  }
+}
+const getMDEInstance = () => {
+  return easyMDEInstance
+}
+
+defineExpose({
+  clear,
+  getMDEInstance
 })
 </script>
