@@ -33,15 +33,14 @@
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情：</label>
-        <edirot v-model="contentVal" :options="editorOpions" ref="editorRef"></edirot>
-        <validate-input
-          rows="10"
-          type="password"
-          tag="textarea"
-          placeholder="请输入文章详情"
-          :rules="contentRules"
+        <edirot
           v-model="contentVal"
-        />
+          :options="editorOpions"
+          ref="editorRef"
+          @blur="checkEditor"
+          :class="{'is-invalid': !editorStatus.isValid}"
+        ></edirot>
+        <span v-if="!editorStatus.isValid" class="invalid-feedback mt-1">{{editorStatus.message}}</span>
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">{{ isEditMode ? '更新文章' : '发表文章' }}</button>
@@ -51,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
@@ -80,6 +79,10 @@ export default defineComponent({
   setup () {
     const uploadedData = ref()
     const titleVal = ref('')
+    const editorStatus = reactive({
+      isValid: true,
+      message: ''
+    })
     const router = useRouter()
     const route = useRoute()
     const isEditMode = !!route.query.id
@@ -94,10 +97,15 @@ export default defineComponent({
       { type: 'required', message: '文章标题不能为空' }
     ]
     const contentVal = ref('')
-    const contentRules: RulesProp = [
-      { type: 'required', message: '文章详情不能为空' }
-    ]
-
+    const checkEditor = () => {
+      if (contentVal.value.trim() === '') {
+        editorStatus.isValid = false
+        editorStatus.message = '文章详情不能为空'
+      } else {
+        editorStatus.isValid = true
+        editorStatus.message = ''
+      }
+    }
     onMounted(() => {
       if (editorRef.value) {
         console.log(editorRef.value.getMDEInstance())
@@ -118,7 +126,8 @@ export default defineComponent({
       if (rawData.data._id) imageId = rawData.data._id
     }
     const onFormSubmit = (result: boolean) => {
-      if (result) {
+      checkEditor()
+      if (result && editorStatus.isValid) {
         const { column, _id } = store.state.user
         if (column) {
           const newPost: PostProps = {
@@ -174,7 +183,6 @@ export default defineComponent({
       titleRules,
       titleVal,
       contentVal,
-      contentRules,
       onFormSubmit,
       handleFileChange,
       uploadCheck,
@@ -183,7 +191,9 @@ export default defineComponent({
       isEditMode,
       textArea,
       editorOpions,
-      editorRef
+      editorRef,
+      checkEditor,
+      editorStatus
     }
   }
 })
@@ -200,4 +210,5 @@ export default defineComponent({
   height: 100%;
   object-fit: cover;
 }
+
 </style>

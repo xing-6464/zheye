@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, defineExpose, ref, onMounted, onUnmounted } from 'vue'
+import { defineProps, defineEmits, defineExpose, ref, onMounted, onUnmounted, watch } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 
 // 类型，属性，事件
@@ -27,7 +27,13 @@ const emit = defineEmits<EditorEvents>()
 const textArea = ref<null | HTMLTextAreaElement>(null)
 let easyMDEInstance: EasyMDE | null = null
 const innerValue = ref(props.modelValue || '')
-
+watch(() => props.modelValue, (newValue) => {
+  if (easyMDEInstance) {
+    if (newValue !== innerValue.value) {
+      easyMDEInstance.value(newValue || '')
+    }
+  }
+})
 onMounted(() => {
   if (textArea.value) {
     // 组装options
@@ -75,3 +81,9 @@ defineExpose({
   getMDEInstance
 })
 </script>
+
+<style>
+.vue-easymde-editor.is-invalid {
+  border: 1px solid #dc3545;
+}
+</style>
