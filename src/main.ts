@@ -13,7 +13,7 @@ axios.interceptors.request.use(config => {
   store.commit('setLoading', true)
   store.commit('setError', { status: false, message: '' })
   // get 请求，添加到 url 中
-  config.params = { ...config.params, icode: '92B81830ECDBC83B' }
+  config.params = { ...config.params, icode: '257DE70746C545AF' }
   // 其他请求，添加到 body 中
   // 如果是上传文件，添加到 FormData 中
   if (config.data instanceof FormData) {

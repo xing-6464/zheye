@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import Dropdown from './Dropdown.vue'
+import Dropdown from './DropDown.vue'
 import DropdownItem from './DropdownItem.vue'
 import { UserProps, GlobalDataProps } from '../store'
 import { useStore } from 'vuex'
